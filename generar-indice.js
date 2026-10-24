@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const CARPETA = 'documentos';
+const CARPETA = 'Documentos';
 const EXTENSIONES = new Set([
   '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv',
 ]);
