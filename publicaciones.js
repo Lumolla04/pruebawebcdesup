@@ -42,7 +42,7 @@ function publicaciones(id) {
     const h = $('div', 'cab-sec'); h.style.setProperty('--c', color(sec.id));
     h.append($('h1', '', sec.nombre), $('p', 'lead', sec.desc)); f.append(h, listado(docs.filter(d => d.seccion === sec.id), false));
   } else {
-    f.append($('h1', '', 'Publicaciones'), $('p', 'lead', 'Texto provisional: elige un tipo de publicación o busca en todo el archivo.'));
+    f.append($('h1', '', 'Publicaciones'));
     const g = $('div', 'tarjetas');
     SECCIONES.forEach(s => {
       const n = docs.filter(d => d.seccion === s.id).length, a = $('a', 'tarjeta'); a.href = '#' + s.id; a.style.setProperty('--c', color(s.id));
