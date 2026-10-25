@@ -57,6 +57,25 @@
     @media (max-width: 30rem) {
       li { flex-direction: column; gap: .15rem; }
     }
+    dialog {
+      width: min(64rem, 94vw); height: 90vh; padding: 0;
+      border: 1px solid var(--linea); border-radius: 8px;
+      background: var(--superficie); color: var(--texto);
+    }
+    dialog[open] { display: flex; flex-direction: column; }
+    dialog::backdrop { background: rgba(0, 0, 0, .55); }
+    dialog header {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; padding: .7rem 1rem; border-bottom: 1px solid var(--linea);
+    }
+    dialog header strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    dialog header span { display: flex; gap: 1rem; align-items: center; white-space: nowrap; }
+    dialog a { color: var(--acento); }
+    dialog button {
+      font: inherit; color: inherit; background: none; cursor: pointer;
+      border: 1px solid var(--linea); border-radius: 6px; padding: .3rem .75rem;
+    }
+    dialog iframe { flex: 1; width: 100%; border: 0; background: #fff; }
   </style>
 </head>
 <body>
@@ -73,6 +92,18 @@
     <div id="lista"></div>
   </main>
 
+  <dialog id="visor" aria-label="Vista previa del documento">
+    <header>
+      <strong id="visor-titulo"></strong>
+      <span>
+        <a id="visor-abrir" target="_blank" rel="noopener">Abrir en pestaña nueva</a>
+        <a id="visor-descargar" download>Descargar</a>
+        <button id="visor-cerrar" type="button">Cerrar</button>
+      </span>
+    </header>
+    <iframe id="visor-marco" title="Documento"></iframe>
+  </dialog>
+
   <script>
     let documentos = [];
     const lista = document.getElementById('lista');
@@ -84,6 +115,27 @@
     const peso = b => b < 1048576
       ? Math.max(1, Math.round(b / 1024)) + ' KB'
       : (b / 1048576).toFixed(1) + ' MB';
+
+    const visor = document.getElementById('visor');
+    const marco = document.getElementById('visor-marco');
+
+    // Solo se usa el visor si es un PDF, el navegador puede mostrarlos
+    // y la pantalla es ancha. En otros casos se abre en una pestaña nueva.
+    const puedeVisualizar = d =>
+      d.tipo === 'pdf' && navigator.pdfViewerEnabled &&
+      matchMedia('(min-width: 700px)').matches;
+
+    function abrirVisor(d) {
+      document.getElementById('visor-titulo').textContent = d.nombre;
+      document.getElementById('visor-abrir').href = url(d.ruta);
+      document.getElementById('visor-descargar').href = url(d.ruta);
+      marco.src = url(d.ruta);
+      visor.showModal();
+    }
+
+    document.getElementById('visor-cerrar').addEventListener('click', () => visor.close());
+    visor.addEventListener('click', e => { if (e.target === visor) visor.close(); });
+    visor.addEventListener('close', () => { marco.src = 'about:blank'; });
 
     function pintar() {
       const q = buscar.value.trim().toLowerCase();
@@ -122,6 +174,10 @@
           a.target = '_blank';
           a.rel = 'noopener';
           a.textContent = d.nombre;
+          a.addEventListener('click', e => {
+            if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+            if (puedeVisualizar(d)) { e.preventDefault(); abrirVisor(d); }
+          });
           const det = document.createElement('span');
           det.className = 'detalle';
           det.textContent = d.tipo.toUpperCase() + ' · ' + peso(d.tamano);
