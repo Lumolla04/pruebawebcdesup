@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDES UP</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body data-pagina="inicio">
+<a class="salto" href="#contenido">Saltar al contenido</a>
+<header class="cab" id="cab"></header>
+<main class="ancho" id="contenido" tabindex="-1">
+<section class="hero">
+  <h1>Círculo de Desarrollo Económico y Social de la Universidad del Pacífico</h1>
+  <p class="lead">Texto provisional: aquí irá una frase breve que explique qué hace el círculo.</p>
+  <a class="boton" href="/publicaciones">Ver publicaciones</a>
+</section>
+<h2>Publicaciones recientes</h2>
+<div id="recientes"><p class="vacio">Cargando…</p></div>
+</main>
+<footer id="pie"></footer>
+<script src="sitio.js"></script>
+<script>
+const rec = document.getElementById('recientes');
+cargarDocs().then(docs => {
+  rec.replaceChildren();
+  if (!docs.length) return rec.append($('p', 'vacio', 'Todavía no hay publicaciones.'));
+  const ul = $('ul'); [...docs].sort(porFecha).slice(0, 5).forEach(d => ul.append(itemDoc(d, true))); rec.append(ul);
+}).catch(() => rec.replaceChildren($('p', 'vacio', 'No se pudo cargar la lista de publicaciones.')));
+</script>
+</body>
+</html>
