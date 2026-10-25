@@ -3,10 +3,10 @@
 const SITIO = 'CDES UP';
 const MENU = [['inicio','Inicio','/'],['nosotros','Nosotros','/nosotros'],['eventos','Eventos','/eventos'],['publicaciones','Publicaciones','/publicaciones']];
 const SECCIONES = [ // "id" = nombre de la subcarpeta en minúsculas, sin tildes y con guiones
-  {id:'reportes', nombre:'Reportes', desc:'Texto provisional: informes periódicos y documentos de seguimiento.'},
-  {id:'investigaciones', nombre:'Investigaciones', desc:'Texto provisional: estudios y análisis de largo aliento.'},
-  {id:'noticias', nombre:'Noticias', desc:'Texto provisional: comunicados y novedades del centro.'},
-  {id:'propuestas-de-politica', nombre:'Propuestas de política', desc:'Texto provisional: recomendaciones para la toma de decisiones públicas.'},
+  {id:'reportes', nombre:'Reportes Cortos', desc:'Reportes cortos, muy gráficos y para ser leídos velozmente.'},
+  {id:'investigaciones', nombre:'Investigaciones', desc:'Investigaciones de alcance intermedio, que ahondan en los reportes cortos.'},
+  {id:'noticias', nombre:'Noticias', desc:'Resumen de las noticias más relevantes de cada semana.'},
+  {id:'propuestas-de-politica', nombre:'Propuestas de política', desc:'Recomendaciones desde el círculo para la toma de decisiones públicas.'},
 ];
 // ---------------------------------
 const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
