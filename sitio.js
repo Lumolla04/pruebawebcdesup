@@ -5,7 +5,7 @@ const MENU = [['inicio','Inicio','/'],['nosotros','Nosotros','/nosotros'],['even
 const SECCIONES = [ // "id" = nombre de la subcarpeta en minúsculas, sin tildes y con guiones
   {id:'reportes', nombre:'Reportes Cortos', desc:'Análisis breves y visuales para entender los datos clave.'},
   {id:'investigaciones', nombre:'Investigaciones', desc:'Estudios de profundidad intermedia que amplían los reportes cortos.'},
-  {id:'noticias', nombre:'Noticias', desc:'Resumen semanal de las noticias relevantes del desarrollo económico y social.'},
+  {id:'noticias', nombre:'Noticias', desc:'Resumen semanal de las noticias más relevantes sobre economía y sociedad.'},
   {id:'propuestas-de-politica', nombre:'Propuestas de política', desc:'Recomendaciones del círculo para orientar decisiones públicas.'},
 ];
 // ---------------------------------
