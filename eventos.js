@@ -1,4 +1,4 @@
-// Sección Eventos: tarjetas de eventos pasados + ventana emergente con carrusel de fotos.
+// Sección Eventos: próximos y pasados, con ventana emergente y carrusel de fotos.
 // Lee eventos.json (generado por generar-indice.js). Usa $, url, fechaTxt y porFecha de sitio.js.
 (() => {
   document.body.insertAdjacentHTML('beforeend', `<dialog class="ev-dlg" id="ev-dlg" aria-label="Detalle del evento">
@@ -11,6 +11,7 @@
     </div>
     <div class="ev-texto">
       <p class="ev-fecha" id="ev-fecha"></p><h2 id="ev-tit"></h2><p class="ev-desc" id="ev-desc"></p>
+      <a class="boton ev-insc" id="ev-insc" target="_blank" rel="noopener noreferrer" hidden>Inscribirse</a>
     </div></dialog>`);
   const g = id => document.getElementById(id);
   const dlg = g('ev-dlg'), img = g('ev-img'), contador = g('ev-cont'), galeria = g('ev-gal');
@@ -29,9 +30,9 @@
     g('ev-fecha').textContent = fechaTxt(ev.fecha);
     g('ev-tit').textContent = ev.titulo;
     g('ev-desc').textContent = ev.descripcion || 'Sin descripción.';
-    const varias = ev.fotos.length > 1;
+    const insc = g('ev-insc'); insc.hidden = !ev.inscripcion; if (ev.inscripcion) insc.href = ev.inscripcion;
     galeria.hidden = !ev.fotos.length;
-    g('ev-prev').hidden = g('ev-next').hidden = contador.hidden = !varias;
+    g('ev-prev').hidden = g('ev-next').hidden = contador.hidden = ev.fotos.length < 2;
     if (ev.fotos.length) mostrar(0);
     dlg.showModal(); dlg.scrollTop = 0;
   }
@@ -54,15 +55,31 @@
     } else portada = $('span', 'ev-sinfoto');
     const info = $('span', 'ev-info');
     info.append($('span', 'ev-fecha', fechaTxt(ev.fecha)), $('span', 'ev-tit', ev.titulo), $('span', 'ev-res', ev.resumen));
+    if (ev.inscripcion) info.append($('span', 'ev-tag', 'Inscripción disponible'));
     b.append(portada, info); b.onclick = () => abrir(ev); return b;
   }
 
-  const cont = g('pasados');
-  fetch('eventos.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(lista => {
-    cont.replaceChildren();
-    if (!lista.length) return cont.append($('p', 'vacio', 'Todavía no hay eventos pasados publicados.'));
+  // Un evento próximo deja de mostrarse cuando su fecha ya pasó (compara según la precisión de la fecha).
+  const d = new Date();
+  const hoy = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const vigente = e => !e.fecha || e.fecha >= hoy.slice(0, e.fecha.length);
+  const masCercano = (a, b) => (!a.fecha !== !b.fecha) ? (a.fecha ? -1 : 1)
+    : a.fecha.localeCompare(b.fecha) || a.titulo.localeCompare(b.titulo, 'es');
+
+  const prox = g('proximos'), pas = g('pasados');
+  fetch('eventos.json').then(r => { if (!r.ok) throw 0; return r.json(); }).then(datos => {
+    prox.replaceChildren(); pas.replaceChildren();
+
+    const proximos = datos.proximos.filter(vigente).sort(masCercano);
+    if (!proximos.length) prox.append($('p', 'vacio', 'No hay próximos eventos anunciados por ahora.'));
+    else { const r = $('div', 'ev-grid'); proximos.forEach(e => r.append(tarjeta(e))); prox.append(r); }
+
+    if (!datos.pasados.length) return pas.append($('p', 'vacio', 'Todavía no hay eventos pasados publicados.'));
     const grupos = new Map();
-    lista.sort(porFecha).forEach(e => { const k = e.anio || 'Sin fecha'; if (!grupos.has(k)) grupos.set(k, []); grupos.get(k).push(e); });
-    grupos.forEach((arr, k) => { const r = $('div', 'ev-grid'); arr.forEach(e => r.append(tarjeta(e))); cont.append($('h3', '', k), r); });
-  }).catch(() => cont.replaceChildren($('p', 'vacio', 'No se pudo cargar la lista de eventos.')));
+    datos.pasados.sort(porFecha).forEach(e => { const k = e.anio || 'Sin fecha'; if (!grupos.has(k)) grupos.set(k, []); grupos.get(k).push(e); });
+    grupos.forEach((arr, k) => { const r = $('div', 'ev-grid'); arr.forEach(e => r.append(tarjeta(e))); pas.append($('h3', '', k), r); });
+  }).catch(() => {
+    const m = () => $('p', 'vacio', 'No se pudo cargar la lista de eventos.');
+    prox.replaceChildren(m()); pas.replaceChildren(m());
+  });
 })();

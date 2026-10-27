@@ -18,3 +18,6 @@
 .ev-texto{padding:1.25rem 1.5rem 1.75rem}
 .ev-texto h2{margin:.2rem 0 .8rem}
 .ev-desc{white-space:pre-line;max-width:46rem;margin:0}
+.ev-tag{display:block;margin-top:.6rem;font-size:.85rem;font-weight:700;color:var(--marca)}
+.ev-insc{display:inline-block;margin-top:1.25rem}
+.ev-insc[hidden]{display:none}
