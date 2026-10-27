@@ -53,3 +53,42 @@ if (raiz) {
 fs.writeFileSync('documentos.json', JSON.stringify(documentos, null, 2));
 console.log(`${documentos.length} documentos indexados en documentos.json`);
 
+// ---- Eventos: Eventos/Próximos Eventos/ y Eventos/Eventos Pasados/ ----
+// Cada evento es una carpeta "AAAA-MM-DD Título" con: descripcion.txt, fotos, portada (opcional)
+// e inscripcion.txt (opcional, con el enlace de inscripción).
+const IMAGENES = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif']);
+const subcarpeta = (dir, nombre) =>
+  fs.readdirSync(dir, { withFileTypes: true }).find(e => e.isDirectory() && slug(e.name) === nombre);
+const carpetaEventos = subcarpeta('.', 'eventos');
+
+function leerEventos(nombreSlug) {
+  const sub = carpetaEventos && subcarpeta(carpetaEventos.name, nombreSlug);
+  if (!sub) return [];
+  const base = path.join(carpetaEventos.name, sub.name);
+  return fs.readdirSync(base, { withFileTypes: true }).filter(e => e.isDirectory()).map(e => {
+    const dir = path.join(base, e.name);
+    const archivos = fs.readdirSync(dir).sort((a, b) => a.localeCompare(b, 'es', { numeric: true }));
+    const leer = nombre => fs.readFileSync(path.join(dir, nombre), 'utf8').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').trim();
+    const imagenes = archivos.filter(f => IMAGENES.has(path.extname(f).toLowerCase()));
+    const esPortada = f => slug(path.parse(f).name) === 'portada';
+    const fotos = [...imagenes.filter(esPortada), ...imagenes.filter(f => !esPortada(f))]
+      .map(f => [carpetaEventos.name, sub.name, e.name, f].join('/'));
+    const txt = archivos.find(f => slug(f) === 'descripcion-txt');
+    const descripcion = txt ? leer(txt) : '';
+    const insc = archivos.find(f => slug(f) === 'inscripcion-txt');
+    const { fecha, titulo } = interpretar(e.name);
+    return {
+      titulo: titulo.replace(/_/g, ' ').trim(),
+      fecha,
+      anio: fecha ? Number(fecha.slice(0, 4)) : null,
+      resumen: descripcion.split(/\n\s*\n/)[0].replace(/\s*\n\s*/g, ' '),
+      descripcion,
+      inscripcion: insc ? (leer(insc).match(/https?:\/\/[^\s<>"']+/) || [''])[0] : '',
+      fotos,
+    };
+  });
+}
+
+const eventos = { proximos: leerEventos('proximos-eventos'), pasados: leerEventos('eventos-pasados') };
+fs.writeFileSync('eventos.json', JSON.stringify(eventos, null, 2));
+console.log(`${eventos.proximos.length} próximos y ${eventos.pasados.length} pasados indexados en eventos.json`);
