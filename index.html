@@ -6,19 +6,19 @@
 <title>CDES UP</title>
 <link rel="stylesheet" href="estilos.css">
 <style>
-/* Portada con logo recortado */
+/* Portada: texto a la izquierda y logo grande que se corta con el borde del recuadro */
 .hero {
   display: flex;
   align-items: stretch;
   gap: 8rem;
   position: relative;
-  overflow: hidden; /* Recorta cualquier elemento que sobresalga del marco */
+  overflow: hidden; /* Recorta lo que sobresalga del recuadro azul */
 }
 
 .hero-texto {
   flex: 0 1 36rem;
   min-width: 0;
-  z-index: 1; /* Asegura que el texto siempre quede por encima del logo */
+  z-index: 1; /* El texto siempre queda por encima del logo */
 }
 
 .hero-logo {
@@ -33,22 +33,26 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  opacity: 0.7;
-  transform: scale(1.8); /* Agranda el logo un 80% */
-  transform-origin: center right; /* Define el punto de anclaje de la ampliación */
+  opacity: 0.5;                                 /* Transparencia del logo (1 = sólido) */
+  transform: translateX(25%) scale(2.5);        /* scale = tamaño; translateX = lo empuja hacia la derecha */
+  transform-origin: center right;
 }
 
+/* Celulares: el logo pasa al fondo, detrás del texto, y ya no agranda el recuadro */
 @media (max-width: 46rem) {
   .hero {
     flex-direction: column;
+    gap: 0;
   }
   .hero-logo {
+    position: absolute;
+    inset: 0;
     flex: none;
-    height: 11rem;
   }
   .hero-logo img {
-    transform: scale(1.2); /* Ajuste opcional para móviles */
-    transform-origin: center;
+    opacity: 0.25;
+    transform: translateX(30%) scale(1.6);
+    transform-origin: center right;
   }
 }
 </style>
