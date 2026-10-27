@@ -5,15 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CDES UP</title>
 <link rel="stylesheet" href="estilos.css">
+<style>
+/* Portada: texto a la izquierda y logo grande a la derecha, ocupando el resto del recuadro */
+.hero{display:flex;align-items:stretch;gap:2rem}
+.hero-texto{flex:0 1 36rem;min-width:0}
+.hero-logo{position:relative;flex:1 1 0;min-width:0}
+.hero-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+@media (max-width:46rem){
+  .hero{flex-direction:column}
+  .hero-logo{flex:none;height:11rem}
+}
+</style>
 </head>
 <body data-pagina="inicio">
 <a class="salto" href="#contenido">Saltar al contenido</a>
 <header class="cab" id="cab"></header>
 <main class="ancho" id="contenido" tabindex="-1">
 <section class="hero">
-  <h1>Círculo de Desarrollo Económico y Social de la Universidad del Pacífico</h1>
-  <p class="lead">Texto provisional: aquí irá una frase breve que explique qué hace el círculo.</p>
-  <a class="boton" href="/publicaciones">Ver publicaciones</a>
+  <div class="hero-texto">
+    <h1>Círculo de Desarrollo Económico y Social de la Universidad del Pacífico</h1>
+    <p class="lead">Texto provisional: aquí irá una frase breve que explique qué hace el círculo.</p>
+    <a class="boton" href="/publicaciones">Ver publicaciones</a>
+  </div>
+  <div class="hero-logo"><img src="Assets/Logo CDES Blanco Limpio.png" alt="" onerror="this.remove()"></div>
 </section>
 <h2>Publicaciones recientes</h2>
 <div id="recientes"><p class="vacio">Cargando…</p></div>
