@@ -5,15 +5,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CDES UP</title>
 <link rel="stylesheet" href="estilos.css">
+<style>
+/* Portada: texto a la izquierda y logo grande de fondo que se corta con el borde del recuadro */
+.hero {
+  display: flex;
+  align-items: stretch;
+  gap: 8rem;
+  position: relative;
+  overflow: hidden;   /* Recorta lo que sobresalga del recuadro azul */
+  isolation: isolate; /* Las capas de la portada no se mezclan con el resto de la página */
+}
+
+.hero-texto {
+  flex: 0 1 36rem;
+  min-width: 0;
+  position: relative;
+  z-index: 2;         /* Texto y botón siempre por encima del logo */
+}
+
+/* El logo es una imagen de fondo (no un <img>): no se puede seleccionar, arrastrar ni guardar con clic derecho */
+.hero-logo {
+  position: relative;
+  z-index: 0;
+  flex: 1 1 0;
+  min-width: 0;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.hero-logo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("Assets/Logo CDES Blanco Limpio.svg") center / contain no-repeat;
+  opacity: 0.5;                                 /* Transparencia del logo (1 = sólido) */
+  transform: translateX(25%) scale(2.5);        /* scale = tamaño; translateX = lo empuja hacia la derecha */
+  transform-origin: center right;
+}
+
+/* Celulares: el logo pasa al fondo, detrás del texto, y ya no agranda el recuadro */
+@media (max-width: 46rem) {
+  .hero {
+    flex-direction: column;
+    gap: 0;
+  }
+  .hero-logo {
+    position: absolute;
+    inset: 0;
+    flex: none;
+  }
+  .hero-logo::before {
+    opacity: 0.25;
+    transform: translateX(30%) scale(1.6);
+    transform-origin: center right;
+  }
+  /* En columna, "flex: 0 1 36rem" se aplicaría como ALTO (36rem). Se anula para que mida lo que mide su contenido */
+  .hero-texto {
+    flex: none;
+  }
+  /* Recuadro más compacto en celulares */
+  .hero {
+    padding: 1.25rem 1.1rem 1.4rem;
+  }
+  .hero h1 {
+    font-size: 1.9rem;
+    margin-bottom: 0.4rem;
+  }
+  .hero .lead {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .hero .boton {
+    padding: 0.5rem 1rem;
+  }
+}
+</style>
 </head>
 <body data-pagina="inicio">
 <a class="salto" href="#contenido">Saltar al contenido</a>
 <header class="cab" id="cab"></header>
 <main class="ancho" id="contenido" tabindex="-1">
 <section class="hero">
-  <h1>Círculo de Desarrollo Económico y Social de la Universidad del Pacífico</h1>
-  <p class="lead">Texto provisional: aquí irá una frase breve que explique qué hace el círculo.</p>
-  <a class="boton" href="/publicaciones">Ver publicaciones</a>
+  <div class="hero-texto">
+    <h1>Círculo de Desarrollo Económico y Social de la Universidad del Pacífico</h1>
+    <p class="lead">Jóvenes que lideran el cambio.</p>
+    <a class="boton" href="/publicaciones">Ver publicaciones</a>
+  </div>
+  <div class="hero-logo" aria-hidden="true"></div>
 </section>
 <h2>Publicaciones recientes</h2>
 <div id="recientes"><p class="vacio">Cargando…</p></div>

@@ -21,7 +21,7 @@ const porFecha = (a, b) => (!a.fecha !== !b.fecha) ? (a.fecha ? -1 : 1) : (b.fec
 // ---- Encabezado, pie y visor (se insertan en todas las páginas) ----
 const pagina = document.body.dataset.pagina || '';
 document.getElementById('cab').innerHTML = `<div class="ancho">
-  <a class="marca" href="/" aria-label="CDES UP, inicio"><img class="logo" src="logo-blanco.png" alt="CDES UP" onerror="this.replaceWith(document.createTextNode('CDES UP'))"></a>
+  <a class="marca" href="/" aria-label="CDES UP, inicio"><img class="logo" src="Assets/Logo CDES Color Limpio.png" alt="" onerror="this.remove()"><span>CDES UP</span></a>
   <nav class="princ" id="nav" aria-label="Principal"></nav></div>`;
 MENU.forEach(([i, n, h]) => { const a = $('a', '', n); a.href = h; if (i === pagina) a.setAttribute('aria-current', 'page'); document.getElementById('nav').append(a); });
 document.getElementById('pie').innerHTML = `<div class="ancho"><b>CDES UP</b>Círculo de Desarrollo Económico y Social de la Universidad del Pacífico<br>Datos de contacto provisionales.</div>`;
